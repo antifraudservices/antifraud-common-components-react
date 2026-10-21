@@ -1,0 +1,18 @@
+{
+  "name": "antifraud-common-components-react",
+  "version": "1.0.0",
+  "description": "Domain-neutral React screens for portal entry, authentication, profile protection and evidence",
+  "license": "Apache-2.0",
+  "repository": { "type": "git", "url": "git+https://github.com/antifraudservices/antifraud-common-components-react.git" },
+  "bugs": { "url": "https://github.com/antifraudservices/antifraud-common-components-react/issues" },
+  "homepage": "https://github.com/antifraudservices/antifraud-common-components-react#readme",
+  "type": "module",
+  "files": ["dist", "README.md", "CHANGELOG.md", "LICENSE"],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" }, "./styles.css": "./dist/styles.css" },
+  "scripts": { "build": "tsc -p tsconfig.build.json && cp src/styles.css dist/styles.css", "test": "vitest run", "typecheck": "tsc -p tsconfig.json --noEmit", "check": "npm run typecheck && npm test -- --maxWorkers=1 --no-file-parallelism && npm run build", "prepack": "npm run check" },
+  "engines": { "node": ">=24.0.0" },
+  "peerDependencies": { "react": ">=18.3.0", "react-dom": ">=18.3.0" },
+  "devDependencies": { "@testing-library/jest-dom": "6.9.1", "@testing-library/react": "16.3.2", "@testing-library/user-event": "14.6.1", "@types/node": "22.19.15", "@types/react": "19.2.17", "@types/react-dom": "19.2.3", "jsdom": "26.1.0", "react": "19.2.8", "react-dom": "19.2.8", "typescript": "5.9.3", "vitest": "4.1.12" }
+}
