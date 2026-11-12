@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.1.0 - 2026-11-12
 
 - Add controlled index-provider selection with optional inherited-provider presentation and theme-aware selected text. Hosts retain provider eligibility and override authority.
 - Add localized action feedback and safe known-code resolution; unknown diagnostics use host-provided fallback copy.
