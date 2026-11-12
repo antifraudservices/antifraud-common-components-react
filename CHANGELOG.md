@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Add controlled index-provider selection with optional inherited-provider presentation and theme-aware selected text. Hosts retain provider eligibility and override authority.
+- Add localized action feedback and safe known-code resolution; unknown diagnostics use host-provided fallback copy.
+- Associate rejected PIN feedback with its input, clear stale feedback on edits and contain unexpected unlock-adapter failures without opening protected content.
+
 ## 1.0.0 - 2026-10-21
 
 - Extract domain-neutral portal entry, sign-in, biometric/PIN profile
