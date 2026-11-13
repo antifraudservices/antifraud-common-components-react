@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.2.1 - 2026-11-13
+
 - Add a controlled phone verification form and optional sign-in panel slot. Hosts retain Firebase, OTP confirmation and account authority; rejected codes remain editable and busy states lock all actions.
 
 - Add optional host-localized section pickers to the controlled permission editor: choose an unassigned section, add its tag with `+`, or remove it with `−`. Each group keeps its complete-selection control, preserves unknown saved values and selections in other groups, and respects disabled fields. Existing checkbox consumers remain compatible; selection emits no authorization or decision change.
