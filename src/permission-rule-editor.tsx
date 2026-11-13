@@ -1,18 +1,21 @@
 'use client'
 
-import {useId,type FormEvent,type ReactNode} from 'react'
+import {useId,useState,type FormEvent,type ReactNode} from 'react'
 import {ActionFeedback} from './action-feedback.js'
 
 /** Opaque host-owned choices: rendering a value never resolves identity or grants access. */
 export type PermissionEditorChoice = Readonly<{value:string;label:string;labelKey?:string;disabled?:boolean}>
 export type PermissionEditorField = Readonly<{label:string;value:string;options:readonly PermissionEditorChoice[];onChange?:(value:string)=>void}>
 export type PermissionEditorSelection = Readonly<{label:string;options:readonly PermissionEditorChoice[];values:readonly string[];onChange:(values:string[])=>void}>
+/** Optional host-localized section tags. allAssignedLabel describes no remaining eligible choices; without this copy, existing section checkboxes are retained. */
+export type PermissionEditorSectionPicker = Readonly<{addLabel:string;removeLabel:string;unassignedLabel:string;allAssignedLabel:string}>
+type PermissionEditorSectionGroup = Readonly<{id:string;label:string;allLabel?:string;options:readonly PermissionEditorChoice[]}>
 export type PermissionRuleEditorProps = Readonly<{
  title:string;description?:string;sector?:PermissionEditorField;purpose:PermissionEditorField
  recipient:PermissionEditorField&Readonly<{fields?:ReactNode}>
  decision?:PermissionEditorField
  roles:PermissionEditorSelection
- sections:Readonly<{label:string;values:readonly string[];onChange:(values:string[])=>void;groups:readonly Readonly<{id:string;label:string;allLabel?:string;options:readonly PermissionEditorChoice[]}>[]}>
+ sections:Readonly<{label:string;values:readonly string[];onChange:(values:string[])=>void;groups:readonly PermissionEditorSectionGroup[];picker?:PermissionEditorSectionPicker}>
  expiry?:Readonly<{label:string;periodLabel?:string;enabled:boolean;onEnabledChange:(enabled:boolean)=>void;value:string;options:readonly PermissionEditorChoice[];onChange:(value:string)=>void;hint:string}>
  copy:Readonly<{cancel:string;submit:string;required:string}>
  translate?:(key:string,fallback:string)=>string
@@ -20,6 +23,45 @@ export type PermissionRuleEditorProps = Readonly<{
  submitAction?:string;cancelAction?:string
  busy?:boolean;fieldsDisabled?:boolean;disabled?:boolean;error?:string;notice?:string;children?:ReactNode
 }>
+
+/** Only the pending dropdown choice is local; saved and unknown selection values remain host-controlled. */
+function SectionGroup({group,values,onChange,picker,label,locked,children}:Readonly<{
+ group:PermissionEditorSectionGroup;values:readonly string[];onChange:(values:string[])=>void
+ picker:PermissionEditorSectionPicker|undefined;label:(choice:PermissionEditorChoice)=>string;locked:boolean;children?:ReactNode
+}>){
+ const [pending,setPending]=useState('')
+ const eligible=group.options.filter(option=>!option.disabled)
+ const all=eligible.length>0&&eligible.every(option=>values.includes(option.value))
+ const unassigned=group.options.filter(option=>!values.includes(option.value))
+ const current=unassigned.find(option=>option.value===pending&&!option.disabled)??unassigned.find(option=>!option.disabled)
+ function toggleAll(){
+  if(locked||!eligible.length)return
+  const ids=new Set(eligible.map(option=>option.value))
+  onChange(all?values.filter(value=>!ids.has(value)):[...new Set([...values,...ids])])
+ }
+ function add(){
+  if(locked||!current)return
+  onChange([...new Set([...values,current.value])]);setPending('')
+ }
+ return <fieldset><legend>{group.label}</legend>
+  {group.allLabel?<label className="afcc-permission-select-all"><input type="checkbox" checked={all} disabled={locked||!eligible.length} onChange={toggleAll}/>{group.allLabel}</label>:null}
+  {picker?<div className="afcc-permission-section-picker">
+   <div className="afcc-permission-section-add">
+    <label className="afcc-permission-field"><span>{picker.unassignedLabel}</span>
+     <select aria-label={picker.unassignedLabel} value={current?.value??''} disabled={locked||!current} onChange={event=>setPending(event.currentTarget.value)}>
+      {!current?<option value="" disabled>{picker.allAssignedLabel}</option>:null}
+      {unassigned.map(option=><option key={option.value} value={option.value} disabled={option.disabled}>{label(option)}</option>)}
+     </select>
+    </label>
+    <button type="button" aria-label={picker.addLabel} title={picker.addLabel} disabled={locked||!current} onClick={add}><span aria-hidden="true">+</span></button>
+   </div>
+   <ul className="afcc-permission-section-tags">{group.options.filter(option=>values.includes(option.value)).map(option=>{
+    const text=label(option),removeLabel=`${picker.removeLabel} ${text}`
+    return <li key={option.value}><span>{text}</span><button type="button" aria-label={removeLabel} title={removeLabel} disabled={locked||option.disabled} onClick={()=>{if(!locked&&!option.disabled)onChange(values.filter(value=>value!==option.value))}}><span aria-hidden="true">−</span></button></li>
+   })}</ul>
+  </div>:children}
+ </fieldset>
+}
 
 /** One controlled form. Hosts supply permitted controls, catalogs, localization and adapters; no auth, storage, policy evaluation or network calls live here. */
 export function PermissionRuleEditor({title,description,sector,purpose,recipient,decision,roles,sections,expiry,copy,onSubmit,onCancel,busy=false,fieldsDisabled=false,disabled=false,error,notice,children,translate,submitAction,cancelAction}:PermissionRuleEditorProps){
@@ -32,10 +74,7 @@ export function PermissionRuleEditor({title,description,sector,purpose,recipient
   <fieldset disabled={busy||fieldsDisabled} className="afcc-permission-fields">
    {sector?field(sector):null}{field(purpose)}{field(recipient)}{recipient.fields}{decision?field(decision):null}
    <details className="afcc-permission-group"><summary>{roles.label}</summary>{choices(roles.options,roles.values,roles.onChange)}</details>
-   <details className="afcc-permission-group"><summary>{sections.label}</summary>{sections.groups.map(group=>{
-    const eligible=group.options.filter(option=>!option.disabled),all=eligible.length>0&&eligible.every(option=>sections.values.includes(option.value))
-    return <fieldset key={group.id}><legend>{group.label}</legend>{group.allLabel?<label className="afcc-permission-select-all"><input type="checkbox" checked={all} disabled={!eligible.length} onChange={()=>{const ids=new Set(eligible.map(option=>option.value));sections.onChange(all?sections.values.filter(value=>!ids.has(value)):[...new Set([...sections.values,...ids])])}}/>{group.allLabel}</label>:null}{choices(group.options,sections.values,sections.onChange)}</fieldset>
-   })}</details>
+   <details className="afcc-permission-group"><summary>{sections.label}</summary>{sections.groups.map(group=><SectionGroup key={group.id} group={group} values={sections.values} onChange={sections.onChange} picker={sections.picker} label={label} locked={busy||fieldsDisabled}>{sections.picker?null:choices(group.options,sections.values,sections.onChange)}</SectionGroup>)}</details>
    {expiry?<div className="afcc-permission-expiry"><label><input type="checkbox" checked={expiry.enabled} onChange={event=>expiry.onEnabledChange(event.currentTarget.checked)}/>{expiry.label}</label>{expiry.enabled?field({label:expiry.periodLabel??expiry.label,value:expiry.value,options:expiry.options,onChange:expiry.onChange}):<p>{expiry.hint}</p>}</div>:null}
    {children}
   </fieldset>
