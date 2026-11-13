@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Add a controlled progressive permission editor with host-supplied roles, purposes, recipient controls, section groups, optional expiry and nearby feedback.
+- Validate multi-catalog JSON:API UI translations with mandatory English coverage, optional locale fallback and collision rejection; catalogs never confer authority.
+- Add a searchable choice picker that retains off-screen selections and a pure UTC expiry helper with month/year day clamping.
+
+
 ## 1.1.0 - 2026-11-12
 
 - Add controlled index-provider selection with optional inherited-provider presentation and theme-aware selected text. Hosts retain provider eligibility and override authority.
