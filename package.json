@@ -1,6 +1,6 @@
 {
   "name": "antifraud-common-components-react",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Domain-neutral React screens for portal entry, authentication, profile protection and evidence",
   "license": "Apache-2.0",
   "repository": {
