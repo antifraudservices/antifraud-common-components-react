@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.2.0 - 2026-11-13
+
 - Add a controlled progressive permission editor with host-supplied roles, purposes, recipient controls, section groups, optional expiry and nearby feedback.
 - Validate multi-catalog JSON:API UI translations with mandatory English coverage, optional locale fallback and collision rejection; catalogs never confer authority.
 - Add a searchable choice picker that retains off-screen selections and a pure UTC expiry helper with month/year day clamping.
