@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react'
 
 export type PortalBrandAsset = Readonly<{ src: string; alt: string; width: number; height: number }>
 export type PortalBrandArtworkSet = Readonly<{ darkSurface: PortalBrandAsset; lightSurface: PortalBrandAsset }>
-export type PortalBrand = Readonly<{ family: 'personal' | 'professional' | 'controller' | 'marketplace'; productName: string; organizationName: string; homeHref: string; mark: PortalBrandArtworkSet; heroArtwork?: PortalBrandArtworkSet; variables?: CSSProperties }>
+export type PortalBrand = Readonly<{ family: 'personal' | 'professional' | 'controller' | 'marketplace'; productName: string; organizationName: string; homeHref: string; markHref?: string; mark?: PortalBrandArtworkSet; heroArtwork?: PortalBrandArtworkSet; variables?: CSSProperties }>
 export type PortalAccessOption = Readonly<{ id: string; href: string; title: string; description: string; requirement: string }>
 export type ProfileProtectionState = 'not-required' | 'checking' | 'setup-required' | 'locked' | 'unavailable'
 export type ProfileUnlockResult = 'unlocked' | 'invalid-pin' | 'temporarily-locked' | 'unavailable'
