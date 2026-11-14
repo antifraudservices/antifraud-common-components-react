@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Allow hosts to omit brand artwork and retain a separate mark destination.
+  Render entry artwork only when supplied, and keep a bounded decorative
+  identity placeholder for protected profiles without a selected image.
+  PIN rejection and required-passkey enrollment ordering remain unchanged.
+
 ## 1.2.1 - 2026-11-13
 
 - Add a controlled phone verification form and optional sign-in panel slot. Hosts retain Firebase, OTP confirmation and account authority; rejected codes remain editable and busy states lock all actions.
