@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Own controlled header and preferences renderers, accessible loading and elapsed
+  status, mounted disclosure sections and shared profile-target presentation.
+  Hosts supply the selected theme, density, navigation and account intentions;
+  storage, browser theme observation, sessions and current-subject context remain
+  outside these renderers. Keep one neutral identity glyph implementation.
+
 - Allow hosts to omit brand artwork and retain a separate mark destination.
   Render entry artwork only when supplied, and keep a bounded decorative
   identity placeholder for protected profiles without a selected image.

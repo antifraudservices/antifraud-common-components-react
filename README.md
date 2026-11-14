@@ -14,6 +14,16 @@ compositions with a separate mark destination. `PortalEntryHero` renders only
 supplied artwork. A protected target without an image retains a decorative
 identity placeholder; the host-selected target and unlock callbacks are unchanged.
 
+`PortalHeader` and `PortalSettingsPanel` receive `theme`, `density` and change
+callbacks as controlled values. Account, language, security and legal actions
+remain host-supplied. A header's `currentSubject` is an opaque React slot.
+These components do not read storage, observe browser themes, create sessions
+or apply document preferences. `PortalLoadingSkeleton`, `ElapsedOperationStatus`
+and `CollapsiblePortalSection` own only presentation state. `ProfileIdentityTarget`
+and `ProfileIdentityIcon` share the same decorative identity rendering as the
+PIN gate. Import the package stylesheet for neutral light/dark component tokens;
+the host selects the theme and implements any density effects.
+
 `IndexProviderSelector` displays host-supplied eligible providers and emits their opaque identifier unchanged. Set `allowProviderOverride={false}` to display an inherited provider without offering a change; the server still enforces eligibility and authority.
 
 `ActionFeedback` renders localized info, warning, error or success beside its triggering action. `resolveActionFeedback` maps only explicitly supplied identifiers and otherwise returns safe fallback text. The host owns localization and transport adapters. Import `antifraud-common-components-react/styles.css` after legacy component styles and before host theme overrides.
