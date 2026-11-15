@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.3.0 - 2026-11-14
 
 - Expose Common-owned `--afcc-*` theme aliases over the existing palette for
   neutral compositions. Preserve light/dark values and the existing warning tone
