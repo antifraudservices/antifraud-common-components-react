@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Expose Common-owned `--afcc-*` theme aliases over the existing palette for
+  neutral compositions. Preserve light/dark values and the existing warning tone
+  without importing another component package or duplicating its palette.
+
 - Own controlled header and preferences renderers, accessible loading and elapsed
   status, mounted disclosure sections and shared profile-target presentation.
   Hosts supply the selected theme, density, navigation and account intentions;
