@@ -1,95 +1,55 @@
 # Antifraud Common Components React
 
-Domain-neutral controlled React screens shared by health, veterinary,
-qualification, controller and marketplace applications.
+Controlled React screens shared by health, veterinary, qualification,
+controller and marketplace applications. The package provides entry navigation,
+sign-in presentation, PIN/passkey profile protection, identity rendering and
+permission editing. Applications supply state and handle actions through their
+own authentication, storage and authorization adapters.
 
-The package owns entry navigation, sign-in presentation, PIN/passkey profile
-protection, browser passkey capability helpers and neutral identity evidence.
-Identity providers, OTP delivery, WebAuthn ceremonies, sessions, wallet/key
-custody, BFF calls, tenant selection, persistence and authorization remain in
-the consuming application.
+## Compose the portal shell
 
-`PortalBrand` permits omitted artwork and an optional `markHref` for header
-compositions with a separate mark destination. `PortalEntryHero` renders only
-supplied artwork. A protected target without an image retains a decorative
-identity placeholder; the host-selected target and unlock callbacks are unchanged.
+Use `PortalHeader` and `PortalSettingsPanel` with controlled `theme`, `density`
+and change callbacks. Supply account, language, security and legal actions,
+and place the selected subject in the header's `currentSubject` slot.
+`PortalBrand` accepts optional artwork and `markHref` when its mark has a
+separate destination. `PortalEntryHero` renders supplied artwork;
+`ProfileIdentityTarget` and `ProfileIdentityIcon` provide the same decorative
+placeholder as the PIN gate when an image is unavailable.
 
-`PortalHeader` and `PortalSettingsPanel` receive `theme`, `density` and change
-callbacks as controlled values. Account, language, security and legal actions
-remain host-supplied. A header's `currentSubject` is an opaque React slot.
-These components do not read storage, observe browser themes, create sessions
-or apply document preferences. `PortalLoadingSkeleton`, `ElapsedOperationStatus`
-and `CollapsiblePortalSection` own only presentation state. `ProfileIdentityTarget`
-and `ProfileIdentityIcon` share the same decorative identity rendering as the
-PIN gate. Import the package stylesheet for neutral light/dark component tokens;
-the host selects the theme and implements any density effects.
+Use `PortalLoadingSkeleton`, `ElapsedOperationStatus` and
+`CollapsiblePortalSection` to present progress and expandable content.
 
-Neutral color compositions may consume the public `--afcc-*` aliases for surface,
-panel, text, border, accent and semantic action tones. The aliases reuse this
-package's existing light/dark palette; they do not select or persist a theme.
+Import `antifraud-common-components-react/styles.css` after legacy component
+styles and before host theme overrides. The public `--afcc-*` aliases expose
+the existing light/dark surface, panel, text, border, accent and action colors.
+The host chooses and persists the theme.
 
-`IndexProviderSelector` displays host-supplied eligible providers and emits their opaque identifier unchanged. Set `allowProviderOverride={false}` to display an inherited provider without offering a change; the server still enforces eligibility and authority.
+## Present provider choices and action results
 
-`ActionFeedback` renders localized info, warning, error or success beside its triggering action. `resolveActionFeedback` maps only explicitly supplied identifiers and otherwise returns safe fallback text. The host owns localization and transport adapters. Import `antifraud-common-components-react/styles.css` after legacy component styles and before host theme overrides.
+`IndexProviderSelector` shows eligible providers supplied by the host and
+returns their opaque identifiers unchanged. Set `allowProviderOverride={false}`
+when the provider is inherited and fixed for the current flow.
 
-The provider selector and action feedback are composed by the Personal card-creation dialog and both care portals’ Demo unlock adapters. Entry, sign-in and profile-protection exports remain public compatibility contracts for existing controller and other portal consumers; this release does not migrate every legacy shell or consent editor.
+`ActionFeedback` shows localized information, warnings, errors and success
+beside the relevant action. `resolveActionFeedback` maps explicitly supplied
+identifiers and uses safe fallback text for unknown results. The host supplies
+localization and maps transport responses to those identifiers.
 
+## Build a permission form
 
-`PermissionRuleEditor` renders a host-controlled permission form in this order:
-sector (optional), purpose, recipient and recipient fields, decision (optional),
-collapsible roles and section groups, optional expiry, review and action feedback.
-The host supplies eligible options and controls every selected value. Omit the
-decision and country choices for a self-request. An invitation or assisted proposal
-can use the same renderer with a different host-authorized catalog and adapter.
-`fieldsDisabled` retains a failed request's exact body while leaving its retry
-action enabled; `busy` disables submission too. Optional `submitAction` and
-`cancelAction` preserve host-owned stable action identifiers on the actual controls.
+`PermissionRuleEditor` arranges controlled recipient, purpose, role, section,
+expiry and review fields. `PermissionChoicePicker` filters host options while
+preserving selections outside the current filter. Use
+`createPermissionCatalogTranslator` for validated localized catalog labels and
+`resolvePermissionExpiry` for reviewed UTC expiry values.
 
-`createPermissionCatalogTranslator(document, options)` validates a read-only
-[JSON:API primary document](https://jsonapi.org/format/#document-top-level).
-Its `data` array contains host-defined catalog resources with `type`, `id` and
-`attributes.translations`. This is an application-defined UI projection, not
-an operational FHIR record. A host may supply separate clinical-section,
-purpose-of-use and professional-role resources (or catalogs from other sectors).
-For example, the structure of one catalog is:
+The [integration guide](docs/COMPONENT_INTEGRATION.md) describes callback
+ownership, the catalog document format, validation, retry behavior and required
+server checks. It also explains which checks belong in each consuming portal.
 
-```json
-{
-  "data": [{
-    "type": "terminology-labels",
-    "id": "section-labels",
-    "attributes": {
-      "translations": {
-        "en": {"example.sections.first": "Section label"},
-        "es": {"example.sections.first": "Nombre de la sección"}
-      }
-    }
-  }]
-}
-```
+## Adoption status
 
-Those example keys illustrate UI lookup only. Hosts supply real, system-qualified
-keys for their configured terminology; labels never alter the submitted codes.
-English coverage is mandatory for every `requiredKeys` entry and every optional
-translation. `language` selects the UI locale, then its base locale, then English.
-`showEnglishReference` optionally adds the English label in parentheses. Conflicting
-labels, missing English, duplicate resource identities and raw-key fallbacks fail
-validation before the form is offered. Catalogs label choices; server policy still
-selects which roles, purposes and sections the actor can request or grant.
-
-`PermissionChoicePicker` filters host-supplied options and shows removable selected
-chips without losing hidden selections. It contains no country or sector catalog.
-`resolvePermissionExpiry(preset, now)` resolves hour/day/month/year into an explicit
-UTC instant, clamping month/year changes to the last valid calendar day. The host
-must show the result for review and the server must validate the period. Unchecked
-expiry has no scheduled end; it does not remove revocation checks.
-
-| Export | Consumer composition | Test owner | Real boundary requirement |
-| --- | --- | --- | --- |
-| PermissionRuleEditor | Personal controller editor, member requests and invitation defaults; Professional requests and assisted default-permission proposals | Shared interaction suite; portal policy/adapter suites | Normal UI, BFF, SDK and authoritative reload for each implemented flow |
-| createPermissionCatalogTranslator | All five host adapters above | Shared catalog validation suite | Host offered-code coverage; no authorization inferred from labels |
-| PermissionChoicePicker | Personal country-set editor | Shared filtering/selection suite | Exact selected jurisdictions returned by the contact/Consent adapter |
-| resolvePermissionExpiry | All five permission adapters | Shared UTC calendar suite | Server period validation, saved expiry and subsequent authorization |
-
-Browser, network-provider, native renderer and deployment evidence belongs in each
-consuming portal. A shared DOM test does not establish Expo or production support.
+The provider selector is composed in Personal card creation, and shared action
+feedback is used in care-portal Demo unlock flows. Entry, sign-in and profile
+protection remain public compatibility contracts for other consumers. Legacy
+shells and consent editors still require migration in their owning applications.
