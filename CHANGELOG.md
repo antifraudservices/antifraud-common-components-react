@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 1.3.1
+
+- Pin Antifraud Data 0.3.4 for the public registry query and result contracts
+  used by the controlled directory's public types.
+
 - Add a controlled public-registry directory with address, municipality,
   postal-code, registration and optional exact-identifier fields. Hosts own
   searches and location requests. Real listings retain provenance and never
