@@ -91,3 +91,11 @@ html[data-theme='dark'] { --uhcp-panel:hsl(218 38% 13%); --uhcp-panel-muted:hsl(
   --afcc-text: var(--uhcp-text);
   --afcc-turquoise: var(--uhcp-turquoise);
 }
+.public-registry-directory { display: grid; gap: 1rem; padding: 1.25rem; min-width: 0; }
+.public-registry-directory form { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); }
+.public-registry-directory label { display: grid; gap: .35rem; }
+.public-registry-directory input, .public-registry-directory select { width: 100%; min-width: 0; box-sizing: border-box; font: inherit; }
+.public-registry-directory form > div { display: flex; flex-wrap: wrap; align-items: end; gap: .75rem; grid-column: 1 / -1; }
+.public-registry-directory article { margin-top: 1rem; padding: 1rem; border: 1px solid currentColor; border-radius: 1rem; overflow-wrap: anywhere; }
+.public-registry-directory button { min-height: 2.75rem; }
+.public-registry-directory :focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }

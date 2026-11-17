@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Add a controlled public-registry directory with address, municipality,
+  postal-code, registration and optional exact-identifier fields. Hosts own
+  searches and location requests. Real listings retain provenance and never
+  acquire booking or enrollment capabilities from being displayed.
+
 ## 1.3.0 - 2026-11-14
 
 - Expose Common-owned `--afcc-*` theme aliases over the existing palette for

@@ -53,3 +53,10 @@ The provider selector is composed in Personal card creation, and shared action
 feedback is used in care-portal Demo unlock flows. Entry, sign-in and profile
 protection remain public compatibility contracts for other consumers. Legacy
 shells and consent editors still require migration in their owning applications.
+### Public registry directory
+
+`PublicRegistryDirectory` is a controlled renderer shared by downstream portal
+audiences. Supply localized `copy`, `query`, `result`, `busy`/`error` state and
+callbacks for search, filter changes, location requests and clearing location.
+It renders real source provenance and optional straight-line distances. It
+never fetches, obtains browser location itself or enables booking/enrollment.
